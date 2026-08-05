@@ -31,12 +31,12 @@ app.use(express.json());
 sequelize.sync({ alter: true })
   .then(() => {
     console.log('✅ Local Database synced successfully');
-    
+
     // Auto-cleanup: Keep order history for 3 months
     const { Op } = require('sequelize');
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-    
+
     Order.destroy({
       where: {
         createdAt: { [Op.lt]: threeMonthsAgo }
@@ -44,11 +44,14 @@ sequelize.sync({ alter: true })
     }).then(deleted => {
       if (deleted > 0) console.log(`🧹 Cleaned up ${deleted} old orders.`);
     }).catch(console.error);
-    
+
   })
   .catch(err => console.error('❌ DB Sync Error:', err));
 
 // API Routes
+app.get("/", (req, res) => {
+  res.send("Backend is running successfully 🚀");
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/menu', menuRoutes);
