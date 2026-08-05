@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard | The Bro's Feast</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/src/style.css">
+</head>
+
+<body class="bg-[#F8F9FA] font-inter text-custom-charcoal antialiased overflow-hidden">
+  
+  <!-- Security Overlay -->
+  <div id="admin-login-overlay" class="fixed inset-0 bg-gray-900/90 z-50 flex items-center justify-center backdrop-blur-md transition-opacity duration-300">
+    <form id="admin-login-form" class="bg-white p-8 rounded-3xl w-full max-w-sm shadow-2xl space-y-6">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-custom-orange rounded-2xl flex items-center justify-center text-white shadow-lg mx-auto mb-4">
+          <i class="ph-bold ph-shield-check text-3xl"></i>
+        </div>
+        <h2 class="font-outfit font-black text-2xl text-gray-900">Admin Login</h2>
+        <p class="text-sm text-gray-500 mt-1">Please authenticate to continue.</p>
+      </div>
+      <div>
+        <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-2">Admin ID</label>
+        <input type="text" id="admin-phone" required class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-custom-orange focus:ring-2 focus:ring-custom-orange/20" />
+      </div>
+      <div>
+        <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-2">Password</label>
+        <input type="password" id="admin-password" required class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none focus:border-custom-orange focus:ring-2 focus:ring-custom-orange/20" />
+      </div>
+      <button type="submit" class="w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-colors flex justify-center items-center gap-2">
+        Unlock Dashboard <i class="ph-bold ph-lock-key-open"></i>
+      </button>
+    </form>
+  </div>
+
+  <div class="min-h-screen flex text-sm">
+    
+    <!-- Sidebar -->
+    <aside class="w-72 bg-custom-charcoal text-white flex-col hidden lg:flex shadow-2xl z-20">
+      <div class="h-24 flex items-center justify-center border-b border-white/10 shrink-0">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-custom-orange rounded-lg flex items-center justify-center text-white shadow-lg">
+            <i class="ph-bold ph-fork-knife text-xl"></i>
+          </div>
+          <div>
+            <h2 class="font-outfit font-bold text-xl leading-none">Admin Panel</h2>
+            <span class="text-[10px] uppercase tracking-widest text-custom-yellow font-semibold mt-1 block">Command Center</span>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="flex-1 py-8 px-4 space-y-2 overflow-y-auto" id="admin-tabs">
+        <div class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4 px-2">Core Systems</div>
+
+        <button data-target="view-dashboard" class="admin-tab-btn flex w-full items-center justify-between px-4 py-3.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">
+          <div class="flex items-center gap-3"><i class="ph-bold ph-chart-line-up text-lg"></i> Analytics Dashboard</div>
+        </button>
+        
+        <button data-target="view-orders" class="admin-tab-btn flex w-full items-center justify-between px-4 py-3.5 bg-white/10 rounded-xl text-custom-yellow font-bold transition-all border border-white/5 shadow-sm">
+          <div class="flex items-center gap-3"><i class="ph-bold ph-bell-ringing text-lg"></i> Live Orders</div>
+          <span class="w-2 h-2 rounded-full bg-custom-orange animate-ping"></span>
+        </button>
+        
+        <button data-target="view-history" class="admin-tab-btn flex w-full text-left items-center justify-between px-4 py-3.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">
+          <div class="flex items-center gap-3"><i class="ph-bold ph-receipt text-lg"></i> Order History</div>
+        </button>
+        
+        <button data-target="view-menu" class="admin-tab-btn flex w-full text-left items-center justify-between px-4 py-3.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">
+          <div class="flex items-center gap-3"><i class="ph-bold ph-book-open text-lg"></i> Menu Database</div>
+        </button>
+        
+        <button data-target="view-reservations" class="admin-tab-btn flex w-full text-left items-center gap-3 px-4 py-3.5 rounded-xl text-gray-400 hover:text-white hover:bg-white/5 font-medium transition-all">
+          <i class="ph-bold ph-users text-lg"></i> Table Reservations
+        </button>
+
+      </nav>
+
+      <div class="p-6 border-t border-white/10 bg-black/20 shrink-0">
+        <button id="enable-sound-btn" class="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-custom-orange text-white font-bold hover:bg-[#FF7700] transition-colors shadow-lg active:scale-95 duration-200">
+          <i class="ph-bold ph-speaker-slash text-lg"></i> Allow Sound Alerts
+        </button>
+        <button id="logout-btn" class="w-full mt-3 flex items-center justify-center gap-2 py-3 rounded-xl bg-gray-800 text-gray-300 font-medium hover:bg-gray-700 hover:text-white transition-colors duration-200">
+          Log Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[#F8F9FA]">
+      
+      <!-- Topbar Header -->
+      <header class="h-24 bg-white/80 backdrop-blur-md border-b border-gray-200 flex items-center justify-between px-8 shrink-0 z-10">
+        <h1 id="view-title" class="font-outfit font-black text-2xl text-gray-900 tracking-tight">Live Orders</h1>
+        <div class="flex items-center gap-4">
+          <div id="connection-status" class="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-700 rounded-full border border-green-200 text-xs font-bold shadow-sm uppercase tracking-wider">
+            <div class="w-2 h-2 rounded-full bg-green-500 relative"><div class="absolute inset-0 rounded-full bg-green-500 animate-ping opacity-75"></div></div> 
+            Connected
+          </div>
+        </div>
+      </header>
+
+      <div class="flex-1 overflow-y-auto p-8 relative">
+
+        <!-- View: Analytics Dashboard -->
+        <div id="view-dashboard" class="admin-view max-w-6xl mx-auto space-y-6 hidden">
+          
+          <!-- Key Metrics Row -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Revenue Stat -->
+            <div class="bg-gradient-to-br from-gray-900 to-black rounded-3xl p-6 shadow-xl text-white relative overflow-hidden group">
+              <div class="absolute -right-6 -top-6 w-32 h-32 bg-white/5 rounded-full blur-2xl group-hover:bg-white/10 transition-colors"></div>
+              <div class="relative z-10 flex flex-col h-full justify-between gap-4">
+                <div class="flex items-center gap-3 text-gray-400">
+                  <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center"><i class="ph-bold ph-currency-circle-dollar text-xl text-custom-yellow"></i></div>
+                  <span class="font-bold text-sm tracking-widest uppercase">Total Gross Revenue</span>
+                </div>
+                <div>
+                  <h3 class="font-black text-5xl font-outfit tracking-tighter" id="stat-revenue">₹0</h3>
+                  <p class="text-xs text-gray-400 mt-2 font-medium">Accumulated from delivered orders</p>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Orders Stat -->
+            <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+              <div class="relative z-10 flex flex-col h-full justify-between gap-4">
+                <div class="flex items-center gap-3 text-gray-500">
+                  <div class="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center"><i class="ph-bold ph-shopping-bag text-xl text-custom-orange"></i></div>
+                  <span class="font-bold text-sm tracking-widest uppercase">Total Orders Served</span>
+                </div>
+                <div>
+                  <h3 class="font-black text-5xl font-outfit text-gray-900 tracking-tighter" id="stat-orders">0</h3>
+                  <p class="text-xs text-gray-400 mt-2 font-medium">Successfully processed to completion</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="bg-white border border-gray-200 rounded-3xl p-6 shadow-sm">
+            <h4 class="font-outfit font-bold text-lg mb-6 flex items-center gap-2"><i class="ph-fill ph-fire text-custom-orange"></i> Most Popular Menu Items</h4>
+            <div class="w-full relative h-[300px]">
+              <canvas id="popularItemsChart"></canvas>
+            </div>
+          </div>
+
+        </div>
+        
+        <!-- View: Orders -->
+        <div id="view-orders" class="admin-view max-w-6xl mx-auto space-y-6">
+          <div id="empty-orders-state" class="hidden flex-col items-center justify-center h-full min-h-[50vh] text-center opacity-60">
+            <div class="w-32 h-32 bg-gray-200 rounded-full flex items-center justify-center mb-6 text-gray-400 shadow-inner">
+              <i class="ph-fill ph-cooking-pot text-6xl"></i>
+            </div>
+            <h3 class="font-outfit font-bold text-xl text-gray-600 mb-1">Kitchen is quiet</h3>
+            <p class="text-gray-500 font-medium text-sm">Waiting for incoming food orders...</p>
+          </div>
+          <div id="orders-container" class="space-y-6"></div>
+        </div>
+
+        <!-- View: History -->
+        <div id="view-history" class="admin-view max-w-6xl mx-auto space-y-6 hidden">
+          <div class="bg-white border text-sm border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-widest text-gray-500">
+                  <th class="p-4 font-bold">Customer Name</th>
+                  <th class="p-4 font-bold">Booking Date & Time</th>
+                  <th class="p-4 font-bold">Food Items Ordered</th>
+                  <th class="p-4 font-bold text-center">Total Price</th>
+                  <th class="p-4 font-bold text-center">Payment</th>
+                  <th class="p-4 font-bold text-center">Status</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body" class="divide-y divide-gray-100">
+                <!-- Dynamically populated -->
+              </tbody>
+              <tfoot class="bg-gray-50 border-t border-gray-200">
+                <tr>
+                  <td colspan="4" class="p-4 font-bold text-right text-gray-600 uppercase tracking-widest text-xs">Total Lifecycle Earnings:</td>
+                  <td colspan="2" class="p-4 font-black text-custom-orange text-xl text-left" id="history-total-earned">₹0</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- View: Menu -->
+        <div id="view-menu" class="admin-view max-w-6xl mx-auto space-y-6 hidden">
+          <div class="flex justify-end">
+            <button onclick="document.getElementById('menu-modal').classList.remove('hidden')" class="px-5 py-2.5 bg-custom-charcoal text-white font-bold rounded-xl hover:bg-black shadow-lg flex items-center gap-2 transition-all">
+              <i class="ph-bold ph-plus"></i> Add Item
+            </button>
+          </div>
+          <div class="bg-white border text-sm border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-widest text-gray-500">
+                  <th class="p-4 font-bold">Category</th>
+                  <th class="p-4 font-bold">Name</th>
+                  <th class="p-4 font-bold">Price</th>
+                  <th class="p-4 font-bold">Type</th>
+                  <th class="p-4 font-bold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="menu-table-body" class="divide-y divide-gray-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- View: Reservations -->
+        <div id="view-reservations" class="admin-view max-w-6xl mx-auto space-y-6 hidden">
+          <div class="bg-white border text-sm border-gray-200 rounded-3xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-xs uppercase tracking-widest text-gray-500">
+                  <th class="p-4 font-bold">Date & Time</th>
+                  <th class="p-4 font-bold">Details</th>
+                  <th class="p-4 font-bold text-center">Status</th>
+                  <th class="p-4 font-bold text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="res-table-body" class="divide-y divide-gray-100">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal components -->
+  <div id="menu-modal" class="fixed inset-0 z-50 bg-gray-900/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl relative">
+      <h3 class="font-outfit font-bold text-2xl mb-6">Menu Item</h3>
+      <form id="menu-form" class="space-y-4">
+        <input type="hidden" id="mi-id" value="">
+        <div>
+          <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-1">ID (Slug)</label>
+          <input type="text" id="mi-slug" required placeholder="e.g. mb-1" class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-1">Name</label>
+          <input type="text" id="mi-name" required placeholder="Item Name" class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div>
+          <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-1">Category</label>
+          <input type="text" id="mi-category" required placeholder="e.g. SOUPS" class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-1">Price (₹)</label>
+            <input type="number" id="mi-price" required class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none">
+          </div>
+          <div>
+            <label class="font-bold text-xs text-gray-400 uppercase tracking-widest block mb-1">Type</label>
+            <select id="mi-type" required class="w-full px-4 py-3 bg-gray-50 rounded-xl border border-gray-200 focus:outline-none">
+              <option value="veg">Veg</option>
+              <option value="non-veg">Non-Veg</option>
+            </select>
+          </div>
+        </div>
+        <div class="flex gap-4 mt-6 pt-4 border-t border-gray-100">
+          <button type="button" onclick="document.getElementById('menu-modal').classList.add('hidden')" class="flex-1 py-3 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+          <button type="submit" class="flex-1 py-3 bg-custom-orange text-white font-bold rounded-xl hover:bg-[#FF7700] transition-colors">Save Item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <audio id="order-ringtone" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+  <script src="/src/admin.js" type="module"></script>
+</body>
+</html>

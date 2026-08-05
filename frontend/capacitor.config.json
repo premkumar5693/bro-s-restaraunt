@@ -1,0 +1,6 @@
+{
+  "appId": "com.brosfeast.app",
+  "appName": "The Bros Feast",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

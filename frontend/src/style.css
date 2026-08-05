@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+  }
+  
+  .background-pattern {
+    background-image: radial-gradient(circle at 1px 1px, white 1px, transparent 0);
+    background-size: 40px 40px;
+  }
+}
+
+@layer components {
+  /* Scroll Reveal Animations */
+  .reveal-up {
+    transform: translateY(40px);
+  }
+  .reveal-left {
+    transform: translateX(-40px);
+  }
+  .reveal-right {
+    transform: translateX(40px);
+  }
+  
+  .reveal-up.is-visible,
+  .reveal-left.is-visible,
+  .reveal-right.is-visible {
+    opacity: 1 !important;
+    transform: translate(0, 0) !important;
+  }
+
+  .nav-link {
+    position: relative;
+    padding-bottom: 4px;
+  }
+  
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #FCBF49;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+}
